@@ -4,6 +4,7 @@ import                                                  androidx.compose.foundat
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
@@ -21,13 +22,13 @@ import co.yml.charts.ui.linechart.model.ShadowUnderLine
 
 @Composable
 fun ProgressGraph(modifier: Modifier = Modifier) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
     val pointsData: List<Point> =
         listOf(Point(1f, 90f), Point(2f, 40f), Point(3f, 60f), Point(4f, 80f), Point(5f, 40f))
 
-//val steps = pointsData.size - 1
-
     val xAxisData = AxisData.Builder()
-        .axisStepSize(100.dp)
+        .axisStepSize((screenWidth / 7))
         .backgroundColor(MaterialTheme.colorScheme.surface)
         .steps(pointsData.size - 1)
         .labelData { i -> i.getDate() }
@@ -71,13 +72,13 @@ fun ProgressGraph(modifier: Modifier = Modifier) {
 
 fun Int.getDate(): String {
     return when (this) {
-        1 -> "Monday"
-        2 -> "Tuesday"
-        3 -> "Wednesday"
-        4 -> "Thursday"
-        5 -> "Friday"
-        6 -> "Saturday"
-        7 -> "Sunday"
-        else -> "Invalid day"
+        1 -> "Mon"
+        2 -> "Tue"
+        3 -> "Wed"
+        4 -> "Thur"
+        5 -> "Fri"
+        6 -> "Sat"
+        7 -> "Sun"
+        else -> ""
     }
 }

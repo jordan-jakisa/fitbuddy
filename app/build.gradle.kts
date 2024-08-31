@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id(libs.plugins.kotlin.kapt)
-    id(libs.plugins.hilt.android)
+    //alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 
@@ -71,10 +72,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.ycharts)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.hilt.android)
+    implementation(libs.dagger.hilt)
     kapt(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.fragment)
-
+    implementation(libs.hilt.navigation.compose)
 }
 
 kapt {

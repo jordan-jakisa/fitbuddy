@@ -26,6 +26,8 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -38,16 +40,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kerustudios.fitbuddy.data.entities.ActivityModel
 import com.kerustudios.fitbuddy.ui.components.HabitCard
 import com.kerustudios.fitbuddy.ui.components.ProgressGraph
+import com.kerustudios.fitbuddy.ui.dialogs.UserNameDialog
+import com.kerustudios.fitbuddy.ui.viewmodels.AppEvents
+import com.kerustudios.fitbuddy.ui.viewmodels.HomeUiState
+import com.kerustudios.fitbuddy.ui.viewmodels.HomeViewModel
 import com.kerustudios.fitbuddy.utils.getToday
 
 @Composable
 fun Home(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    vm: HomeViewModel = hiltViewModel()
 ) {
+    val uiState by vm.uiState.collectAsState(initial = HomeUiState())
     val scrollState = rememberScrollState()
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = modifier
@@ -67,7 +77,11 @@ fun Home(
                 .padding(bottom = 154.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "😁 Good day, mate!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = "😁 Good day, " + (uiState.userName ?: "mate") + "!",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold
+            )
             Text(
                 text = "Track your daily activity and stay healthy",
                 fontSize = 14.sp,
@@ -96,7 +110,11 @@ fun Home(
                 HabitCard(modifier = Modifier.weight(1f))
             }
 
-            ProgressGraph(modifier = Modifier.height(300.dp).clip(RoundedCornerShape(16.dp)))
+            ProgressGraph(
+                modifier = Modifier
+                    .height(300.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
 
         }
         Button(
@@ -109,6 +127,21 @@ fun Home(
             Text(text = "Log workout")
         }
     }
+
+    uiState.appEvents?.let {
+        when (it.first()) {
+            is AppEvents.IsFirstTimeUser -> {
+                UserNameDialog { name ->
+                    vm.updateUserName(name)
+                }
+            }
+
+            else -> {
+                // Do nothing
+            }
+        }
+    }
+
 }
 
 @Composable
