@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kerustudios.fitbuddy.data.preferences.PreferenceKeys
 import com.kerustudios.fitbuddy.data.repositories.DataStoreRepository
+import com.kerustudios.fitbuddy.domain.managers.DatabaseManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val databaseManager: DatabaseManager
 ) : ViewModel() {
 
     private var _uiState = MutableStateFlow(HomeUiState())
@@ -49,7 +51,16 @@ class HomeViewModel @Inject constructor(
                 appEvents = emptyList(),
                 userName = name
             )
+
         }
+    }
+
+    fun showAddWaterDialog() {
+        TODO("Not yet implemented")
+    }
+
+    fun showAddSleepDialog() {
+        TODO("Not yet implemented")
     }
 
 }

@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kerustudios.fitbuddy.data.entities.ActivityModel
 import com.kerustudios.fitbuddy.ui.components.HabitCard
 import com.kerustudios.fitbuddy.ui.components.ProgressGraph
+import com.kerustudios.fitbuddy.ui.dialogs.HabitDialog
 import com.kerustudios.fitbuddy.ui.dialogs.UserNameDialog
 import com.kerustudios.fitbuddy.ui.viewmodels.AppEvents
 import com.kerustudios.fitbuddy.ui.viewmodels.HomeUiState
@@ -106,8 +107,25 @@ fun Home(
             }
 
             Row(modifier = Modifier, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                HabitCard(modifier = Modifier.weight(1f))
-                HabitCard(modifier = Modifier.weight(1f))
+                HabitCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Water",
+                    emoji = "💧",
+                    value = "5.4 liters",
+                    onClick = {
+                        vm.showAddWaterDialog()
+                    }
+                )
+                HabitCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Sleep",
+                    emoji = "😴",
+                    value = "8 hours",
+                    onClick = {
+                        vm.showAddSleepDialog()
+
+                    }
+                )
             }
 
             ProgressGraph(

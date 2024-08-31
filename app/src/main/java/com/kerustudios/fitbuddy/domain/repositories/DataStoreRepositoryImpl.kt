@@ -1,4 +1,4 @@
-package com.kerustudios.fitbuddy.domain
+package com.kerustudios.fitbuddy.domain.repositories
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
