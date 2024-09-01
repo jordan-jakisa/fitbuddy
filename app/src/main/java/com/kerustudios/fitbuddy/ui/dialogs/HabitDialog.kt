@@ -13,8 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -28,12 +30,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitDialog(
     modifier: Modifier = Modifier,
-    habit: Habit = Habit.WATER,
+    habit: Habit,
     onSave: (Habit, Int) -> Unit
 
 ) {
@@ -44,7 +46,7 @@ fun HabitDialog(
     var units by rememberSaveable {
         mutableStateOf(if (habit == Habit.WATER) "liters" else "hours")
     }
-    Dialog(onDismissRequest = { /*TODO*/ }) {
+    ModalBottomSheet(onDismissRequest = { /*TODO*/ }) {
         ElevatedCard(onClick = { /*TODO*/ }) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -100,6 +102,7 @@ sealed class Habit {
 @Composable
 private fun HabitDialogPreview() {
     HabitDialog(
+        habit = Habit.WATER,
         onSave = { _, _ -> }
     )
 }

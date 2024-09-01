@@ -4,7 +4,9 @@ import com.kerustudios.fitbuddy.data.database.Database
 import com.kerustudios.fitbuddy.data.entities.SleepModel
 import com.kerustudios.fitbuddy.data.entities.WaterModel
 import com.kerustudios.fitbuddy.ui.dialogs.Habit
-import java.text.SimpleDateFormat
+import com.kerustudios.fitbuddy.utils.getCurrentDate
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -17,7 +19,8 @@ class DatabaseManager @Inject constructor(
             is Habit.WATER -> {
                 database.waterDao().insertAll(
                     waterModels = WaterModel(
-                        date = SimpleDateFormat("dd-MM-yyyy").format(System.currentTimeMillis()),
+                        date = getCurrentDate(
+                        ),
                         amount = value,
                         unit = "liters",
                         id = Random.nextInt()
@@ -28,9 +31,9 @@ class DatabaseManager @Inject constructor(
             is Habit.SLEEP -> {
                 database.sleepDao().insertAll(
                     sleepModel = SleepModel(
-                        date = SimpleDateFormat("dd-MM-yyyy").format(System.currentTimeMillis()),
+                        date = getCurrentDate(),
                         amount = value,
-                        unit = "liters",
+                        unit = "hours",
                         id = Random.nextInt()
                     )
                 )
@@ -38,4 +41,15 @@ class DatabaseManager @Inject constructor(
         }
     }
 
+    fun getCurrentWaterValues(date: String): Flow<Float> {
+        return database.waterDao().loadAllByDate(date)
+            .map { list -> list.sumOf { it.amount.toDouble() }.toFloat() }
+
+
+    }
+
+    fun getCurrentSleepValues(date: String): Flow<Float> {
+        return database.sleepDao().loadAllByDate(date)
+            .map { list -> list.sumOf { it.amount.toDouble() }.toFloat() }
+    }
 }

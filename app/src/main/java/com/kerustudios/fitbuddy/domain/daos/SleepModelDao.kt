@@ -4,13 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.kerustudios.fitbuddy.data.entities.SleepModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SleepModelDao {
-    @Query("SELECT * FROM WaterModel WHERE date = :date")
-    fun loadAllByDate(date: String): List<SleepModel>
+    @Query("SELECT * FROM SleepModel WHERE date = :date")
+    fun loadAllByDate(date: String): Flow<List<SleepModel>>
 
     @Insert
-    fun insertAll(sleepModel: SleepModel)
+    suspend fun insertAll(sleepModel: SleepModel)
 
 }

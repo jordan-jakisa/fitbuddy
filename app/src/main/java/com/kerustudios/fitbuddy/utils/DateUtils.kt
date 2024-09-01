@@ -1,5 +1,6 @@
 package com.kerustudios.fitbuddy.utils
 
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
@@ -11,6 +12,10 @@ fun getToday(): Triple<String, String, String> {
     val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
 
     return Triple(dayOfMonth, dayOfWeek, month)
+}
+
+fun getCurrentDate(): String {
+    return SimpleDateFormat("dd-MM-yyyy").format(System.currentTimeMillis())
 }
 
 fun Int.getMonth(): String {

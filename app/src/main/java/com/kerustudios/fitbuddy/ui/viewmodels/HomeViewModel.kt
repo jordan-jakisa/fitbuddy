@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.kerustudios.fitbuddy.data.preferences.PreferenceKeys
 import com.kerustudios.fitbuddy.data.repositories.DataStoreRepository
 import com.kerustudios.fitbuddy.domain.managers.DatabaseManager
+import com.kerustudios.fitbuddy.ui.dialogs.Habit
+import com.kerustudios.fitbuddy.utils.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +26,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             launch { initializePageEvents() }
             launch { readUserDetails() }
+            launch {
+                getCurrentDateHabitLog()
+            }
         }
     }
 
@@ -48,29 +53,71 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             dataStoreRepository.setValue(PreferenceKeys.USER_NAME, name)
             _uiState.value = _uiState.value.copy(
-                appEvents = emptyList(),
-                userName = name
+                appEvents = emptyList(), userName = name
             )
 
         }
     }
 
     fun showAddWaterDialog() {
-        TODO("Not yet implemented")
+        _uiState.value = _uiState.value.copy(
+            appEvents = listOf(AppEvents.ShowAddWaterDialog)
+        )
     }
 
     fun showAddSleepDialog() {
-        TODO("Not yet implemented")
+        _uiState.value = _uiState.value.copy(
+            appEvents = listOf(AppEvents.ShowAddSleepDialog)
+        )
+    }
+
+    fun saveEntry(value: Float, habit: Habit) {
+        viewModelScope.launch {
+            databaseManager.saveEntry(value, habit).also {
+                _uiState.value = _uiState.value.copy(
+                    appEvents = emptyList()
+                )
+            }
+        }
+    }
+
+    private suspend fun getCurrentDateHabitLog() {
+        viewModelScope.launch {
+
+            launch {
+                databaseManager.getCurrentWaterValues(
+                    date = getCurrentDate()
+                ).collect {
+                    _uiState.value = _uiState.value.copy(
+                        totalWater = it
+                    )
+                }
+            }
+
+            launch {
+                databaseManager.getCurrentSleepValues(
+                    date = getCurrentDate(),
+                ).collect {
+                    _uiState.value = _uiState.value.copy(
+                        totalSleep = it
+                    )
+                }
+            }
+        }
     }
 
 }
 
 data class HomeUiState(
     val appEvents: List<AppEvents>? = null,
-    val userName: String? = null
+    val userName: String? = null,
+    val totalWater: Float? = null,
+    val totalSleep: Float? = null
 )
 
 sealed class AppEvents() {
     data object IsFirstTimeUser : AppEvents()
     data object None : AppEvents()
+    data object ShowAddWaterDialog : AppEvents()
+    data object ShowAddSleepDialog : AppEvents()
 }

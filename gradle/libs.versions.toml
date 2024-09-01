@@ -12,8 +12,8 @@ composeBom = "2024.08.00"
 ycharts = "2.1.0"
 hiltAndroid = "2.49"
 hiltNavigationCompose = "1.2.0"
-roomVersion="2.6.1"
-kotlinKsp="2.0.0-1.0.23"
+roomVersion = "2.6.1"
+kotlinKsp = "2.0.0-1.0.23"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,8 +35,9 @@ ycharts = { module = "co.yml:ycharts", version.ref = "ycharts" }
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-room-runtime = {module ="androidx.room:room-runtime", version.ref = "roomVersion"}
-room-compiler = {module ="androidx.room:room-compiler", version.ref = "roomVersion"}
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -44,4 +45,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-kapt = { id = "kotlin-kapt", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-kotlin-ksp = { id ="com.google.devtools.ksp", version.ref = "kotlinKsp" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }

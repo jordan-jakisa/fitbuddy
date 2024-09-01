@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kerustudios.fitbuddy.data.entities.ActivityModel
 import com.kerustudios.fitbuddy.ui.components.HabitCard
 import com.kerustudios.fitbuddy.ui.components.ProgressGraph
+import com.kerustudios.fitbuddy.ui.dialogs.Habit
 import com.kerustudios.fitbuddy.ui.dialogs.HabitDialog
 import com.kerustudios.fitbuddy.ui.dialogs.UserNameDialog
 import com.kerustudios.fitbuddy.ui.viewmodels.AppEvents
@@ -53,31 +54,28 @@ import com.kerustudios.fitbuddy.utils.getToday
 
 @Composable
 fun Home(
-    modifier: Modifier = Modifier,
-    vm: HomeViewModel = hiltViewModel()
+    modifier: Modifier = Modifier, vm: HomeViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState(initial = HomeUiState())
     val scrollState = rememberScrollState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = modifier
-                .drawBehind {
-                    drawRect(
-                        brush = Brush.verticalGradient(
-                            colorStops = arrayOf(
-                                0f to Color(0x332037FF),
-                                .56f to Color(0x1A6E6E6E),
-                                1f to Color(0x4D2037FF),
-                            )
+        Column(modifier = modifier
+            .drawBehind {
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            0f to Color(0x332037FF),
+                            .56f to Color(0x1A6E6E6E),
+                            1f to Color(0x4D2037FF),
                         )
                     )
-                }
-                .padding(16.dp)
-                .verticalScroll(scrollState)
-                .padding(bottom = 154.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+                )
+            }
+            .padding(16.dp)
+            .verticalScroll(scrollState)
+            .padding(bottom = 154.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(
                 text = "😁 Good day, " + (uiState.userName ?: "mate") + "!",
                 fontSize = 24.sp,
@@ -107,25 +105,21 @@ fun Home(
             }
 
             Row(modifier = Modifier, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                HabitCard(
-                    modifier = Modifier.weight(1f),
+                HabitCard(modifier = Modifier.weight(1f),
                     title = "Water",
                     emoji = "💧",
-                    value = "5.4 liters",
+                    value = (uiState.totalWater ?: 0f).toString() + " liters",
                     onClick = {
                         vm.showAddWaterDialog()
-                    }
-                )
-                HabitCard(
-                    modifier = Modifier.weight(1f),
+                    })
+                HabitCard(modifier = Modifier.weight(1f),
                     title = "Sleep",
                     emoji = "😴",
-                    value = "8 hours",
+                    value = (uiState.totalSleep ?: 0f).toString() + " hours",
                     onClick = {
                         vm.showAddSleepDialog()
 
-                    }
-                )
+                    })
             }
 
             ProgressGraph(
@@ -147,19 +141,32 @@ fun Home(
     }
 
     uiState.appEvents?.let {
-        when (it.first()) {
-            is AppEvents.IsFirstTimeUser -> {
-                UserNameDialog { name ->
-                    vm.updateUserName(name)
+        if (it.isNotEmpty()) {
+            when (it.first()) {
+                is AppEvents.IsFirstTimeUser -> {
+                    UserNameDialog { name ->
+                        vm.updateUserName(name)
+                    }
                 }
-            }
 
-            else -> {
-                // Do nothing
+                is AppEvents.ShowAddSleepDialog -> {
+                    HabitDialog(habit = Habit.SLEEP, onSave = { habit, value ->
+                        vm.saveEntry(value.toFloat(), habit)
+                    })
+                }
+
+                is AppEvents.ShowAddWaterDialog -> {
+                    HabitDialog(habit = Habit.WATER, onSave = { habit, value ->
+                        vm.saveEntry(value.toFloat(), habit)
+                    })
+                }
+
+                else -> {
+                    // Do nothing
+                }
             }
         }
     }
-
 }
 
 @Composable
@@ -193,7 +200,7 @@ fun TodayCard(modifier: Modifier = Modifier) {
                 fontSize = 24.sp
             )
             Text(
-                dayOfWeek,
+                month,
                 modifier = modifier
                     .fillMaxWidth()
                     .alpha(.75f)

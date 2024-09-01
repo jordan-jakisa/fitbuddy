@@ -7,7 +7,7 @@ import com.kerustudios.fitbuddy.data.entities.WaterModel
 import com.kerustudios.fitbuddy.domain.daos.SleepModelDao
 import com.kerustudios.fitbuddy.domain.daos.WaterModelDao
 
-@Database(entities = [WaterModel::class, SleepModel::class], version = 1)
+@Database(entities = [SleepModel::class, WaterModel::class], version = 1)
 abstract class Database : RoomDatabase() {
     abstract fun waterDao(): WaterModelDao
     abstract fun sleepDao(): SleepModelDao
