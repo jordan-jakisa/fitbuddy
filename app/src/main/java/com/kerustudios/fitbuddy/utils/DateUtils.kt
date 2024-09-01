@@ -1,13 +1,14 @@
 package com.kerustudios.fitbuddy.utils
 
-import android.icu.util.Calendar
+import java.time.LocalDate
+import java.time.format.TextStyle
 import java.util.Locale
 
 fun getToday(): Triple<String, String, String> {
-    val date = Calendar.getInstance(Locale.getDefault()).time
-    val month = Calendar.MONTH.getMonth()
-    val dayOfMonth = Calendar.DAY_OF_MONTH.toString()
-    val dayOfWeek = Calendar.DAY_OF_WEEK.getDayOfWeek()
+    val currentDate = LocalDate.now()
+    val month = currentDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+    val dayOfMonth = currentDate.dayOfMonth.toString()
+    val dayOfWeek = currentDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
 
     return Triple(dayOfMonth, dayOfWeek, month)
 }
