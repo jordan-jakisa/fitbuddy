@@ -2,6 +2,7 @@ package com.kerustudios.fitbuddy.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kerustudios.fitbuddy.data.entities.ActivityModel
 import com.kerustudios.fitbuddy.data.preferences.PreferenceKeys
 import com.kerustudios.fitbuddy.data.repositories.DataStoreRepository
 import com.kerustudios.fitbuddy.domain.managers.DatabaseManager
@@ -26,8 +27,16 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             launch { initializePageEvents() }
             launch { readUserDetails() }
-            launch {
-                getCurrentDateHabitLog()
+            launch { getCurrentDateHabitLog() }
+            launch { getTodayActivity() }
+        }
+    }
+
+    private fun getTodayActivity() {
+        viewModelScope.launch {
+            databaseManager.getActivityByDate().collect {
+                _uiState.value = _uiState.value.copy(activities = it)
+
             }
         }
     }
@@ -112,7 +121,8 @@ data class HomeUiState(
     val appEvents: List<AppEvents>? = null,
     val userName: String? = null,
     val totalWater: Float? = null,
-    val totalSleep: Float? = null
+    val totalSleep: Float? = null,
+    val activities: List<ActivityModel> = emptyList()
 )
 
 sealed class AppEvents() {

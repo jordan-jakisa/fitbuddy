@@ -1,6 +1,7 @@
 package com.kerustudios.fitbuddy.domain.managers
 
 import com.kerustudios.fitbuddy.data.database.Database
+import com.kerustudios.fitbuddy.data.entities.ActivityModel
 import com.kerustudios.fitbuddy.data.entities.SleepModel
 import com.kerustudios.fitbuddy.data.entities.WaterModel
 import com.kerustudios.fitbuddy.ui.dialogs.Habit
@@ -30,6 +31,7 @@ class DatabaseManager @Inject constructor(
 
             is Habit.SLEEP -> {
                 database.sleepDao().insertAll(
+
                     sleepModel = SleepModel(
                         date = getCurrentDate(),
                         amount = value,
@@ -52,4 +54,13 @@ class DatabaseManager @Inject constructor(
         return database.sleepDao().loadAllByDate(date)
             .map { list -> list.sumOf { it.amount.toDouble() }.toFloat() }
     }
+
+    suspend fun saveActivity(activityModel: ActivityModel) {
+        database.activityDao().insertAll(activityModel)
+    }
+
+    suspend fun getActivityByDate(date: String = getCurrentDate()): Flow<List<ActivityModel>> {
+        return database.activityDao().loadAllByDate(date)
+    }
+
 }

@@ -21,7 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,11 +36,11 @@ import androidx.compose.ui.unit.dp
 fun HabitDialog(
     modifier: Modifier = Modifier,
     habit: Habit,
-    onSave: (Habit, Int) -> Unit
+    onSave: (Habit, Float) -> Unit
 
 ) {
     var value by rememberSaveable {
-        mutableIntStateOf(0)
+        mutableFloatStateOf(0f)
     }
 
     var units by rememberSaveable {
@@ -60,7 +60,7 @@ fun HabitDialog(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TextField(
                         value = value.toString(),
-                        onValueChange = { value = it.toInt() },
+                        onValueChange = { value = it.toFloat() },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number

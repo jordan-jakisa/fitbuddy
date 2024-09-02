@@ -21,6 +21,6 @@ object DatabaseModule {
             context,
             Database::class.java,
             "fit_buddy_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 }

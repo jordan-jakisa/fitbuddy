@@ -12,18 +12,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,7 +33,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -92,15 +87,8 @@ fun Home(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
-                    repeat(13) {
-                        ActivityCard(
-                            activityModel = ActivityModel(
-                                icon = Icons.Default.FavoriteBorder, name = "Pushups", reps = 10
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
+                items(uiState.activities) {
+                    ActivityCard(it)
                 }
             }
 
@@ -151,13 +139,13 @@ fun Home(
 
                 is AppEvents.ShowAddSleepDialog -> {
                     HabitDialog(habit = Habit.SLEEP, onSave = { habit, value ->
-                        vm.saveEntry(value.toFloat(), habit)
+                        vm.saveEntry(value, habit)
                     })
                 }
 
                 is AppEvents.ShowAddWaterDialog -> {
                     HabitDialog(habit = Habit.WATER, onSave = { habit, value ->
-                        vm.saveEntry(value.toFloat(), habit)
+                        vm.saveEntry(value, habit)
                     })
                 }
 
@@ -217,27 +205,16 @@ fun ActivityCard(activityModel: ActivityModel) {
     ElevatedCard {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Icon(
-                imageVector = activityModel.icon ?: Icons.Default.FavoriteBorder,
-                contentDescription = "",
-                modifier = Modifier.size(54.dp)
-            )
+            Text(text = activityModel.icon, fontSize = 32.sp)
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = activityModel.reps.toString(), fontWeight = FontWeight.Bold)
-            Text(text = activityModel.name, modifier = Modifier.alpha(.75f), fontSize = 12.sp)
+            Text(
+                text = activityModel.name ?: "...",
+                modifier = Modifier.alpha(.75f),
+                fontSize = 12.sp
+            )
         }
     }
 }
-
-@Preview
-@Composable
-private fun ActivityCardPreview() {
-    ActivityCard(
-        activityModel = ActivityModel(
-            icon = Icons.Default.FavoriteBorder, name = "Pushups", reps = 10
-        )
-    )
-}
-
