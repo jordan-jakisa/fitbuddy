@@ -115,6 +115,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun showActivityBottomSheet() {
+        _uiState.value = _uiState.value.copy(
+            appEvents = listOf(AppEvents.ShowActivityDialog)
+        )
+    }
+
+    fun saveActivity(activityModel: ActivityModel) {
+        viewModelScope.launch {
+            databaseManager.saveActivity(activityModel).also {
+                _uiState.value = _uiState.value.copy(
+                    appEvents = emptyList(), toastMessage = "Activity saved"
+                )
+            }
+        }
+    }
+
+    fun clearAppEvents() {
+        _uiState.value = _uiState.value.copy(
+            appEvents = emptyList()
+        )
+    }
+
 }
 
 data class HomeUiState(
@@ -122,12 +144,13 @@ data class HomeUiState(
     val userName: String? = null,
     val totalWater: Float? = null,
     val totalSleep: Float? = null,
-    val activities: List<ActivityModel> = emptyList()
+    val activities: List<ActivityModel> = emptyList(),
+    val toastMessage: String? = null
 )
 
-sealed class AppEvents() {
+sealed class AppEvents {
     data object IsFirstTimeUser : AppEvents()
-    data object None : AppEvents()
     data object ShowAddWaterDialog : AppEvents()
     data object ShowAddSleepDialog : AppEvents()
+    data object ShowActivityDialog : AppEvents()
 }

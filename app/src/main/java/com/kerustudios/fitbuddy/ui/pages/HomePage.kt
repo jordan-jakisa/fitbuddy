@@ -1,6 +1,7 @@
 package com.kerustudios.fitbuddy.ui.pages
 
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +24,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kerustudios.fitbuddy.data.entities.ActivityModel
 import com.kerustudios.fitbuddy.ui.components.HabitCard
 import com.kerustudios.fitbuddy.ui.components.ProgressGraph
+import com.kerustudios.fitbuddy.ui.dialogs.ActivityBottomSheet
 import com.kerustudios.fitbuddy.ui.dialogs.Habit
 import com.kerustudios.fitbuddy.ui.dialogs.HabitDialog
 import com.kerustudios.fitbuddy.ui.dialogs.UserNameDialog
@@ -53,6 +58,14 @@ fun Home(
 ) {
     val uiState by vm.uiState.collectAsState(initial = HomeUiState())
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = uiState.toastMessage) {
+        uiState.toastMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = modifier
@@ -118,14 +131,17 @@ fun Home(
 
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                vm.showActivityBottomSheet()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .padding(16.dp).padding(bottom = 16.dp)
         ) {
             Text(text = "Log workout")
         }
+
     }
 
     uiState.appEvents?.let {
@@ -147,6 +163,17 @@ fun Home(
                     HabitDialog(habit = Habit.WATER, onSave = { habit, value ->
                         vm.saveEntry(value, habit)
                     })
+                }
+
+                is AppEvents.ShowActivityDialog -> {
+                    ActivityBottomSheet(
+                        onSave = { activityModel ->
+                            vm.saveActivity(activityModel)
+                        },
+                        onDissmiss = {
+                            vm.clearAppEvents()
+                        }
+                    )
                 }
 
                 else -> {
@@ -209,7 +236,11 @@ fun ActivityCard(activityModel: ActivityModel) {
         ) {
             Text(text = activityModel.icon, fontSize = 32.sp)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = activityModel.reps.toString(), fontWeight = FontWeight.Bold)
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(text = activityModel.reps.toString(), fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = activityModel.units, fontSize = 10.sp, modifier = Modifier.alpha(.75f))
+            }
             Text(
                 text = activityModel.name ?: "...",
                 modifier = Modifier.alpha(.75f),

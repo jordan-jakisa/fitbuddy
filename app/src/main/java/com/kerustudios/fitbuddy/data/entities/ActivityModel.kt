@@ -9,8 +9,9 @@ import com.kerustudios.fitbuddy.utils.getCurrentDate
 data class ActivityModel(
     @PrimaryKey val id: Int,
     val createdAt: Long = System.currentTimeMillis(),
+    val date: String = getCurrentDate(),
     val icon: String = "",
     val reps: Int = Int.MIN_VALUE,
     val name: String? = null,
-    val date: String = getCurrentDate()
+    val units: String = ""
 )
