@@ -16,7 +16,6 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,6 +29,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +46,7 @@ fun HabitDialog(
     var units by rememberSaveable {
         mutableStateOf(if (habit == Habit.WATER) "liters" else "hours")
     }
-    ModalBottomSheet(onDismissRequest = { /*TODO*/ }) {
+    Dialog(onDismissRequest = { /*TODO*/ }) {
         ElevatedCard(onClick = { /*TODO*/ }) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -60,7 +60,11 @@ fun HabitDialog(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TextField(
                         value = value.toString(),
-                        onValueChange = { value = it.toFloat() },
+                        onValueChange = {
+                            if (it.isNotEmpty())
+                                value = it.toFloat()
+                            else 0f
+                        },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number

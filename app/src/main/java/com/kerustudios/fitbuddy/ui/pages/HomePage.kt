@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kerustudios.fitbuddy.data.entities.ActivityModel
+import com.kerustudios.fitbuddy.ui.components.ActivityCard
 import com.kerustudios.fitbuddy.ui.components.HabitCard
 import com.kerustudios.fitbuddy.ui.components.ProgressGraph
 import com.kerustudios.fitbuddy.ui.dialogs.ActivityBottomSheet
@@ -137,11 +138,11 @@ fun Home(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(16.dp).padding(bottom = 16.dp)
+                .padding(16.dp)
+                .padding(bottom = 16.dp)
         ) {
             Text(text = "Log workout")
         }
-
     }
 
     uiState.appEvents?.let {
@@ -222,29 +223,6 @@ fun TodayCard(modifier: Modifier = Modifier) {
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun ActivityCard(activityModel: ActivityModel) {
-    ElevatedCard {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(text = activityModel.icon, fontSize = 32.sp)
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.Bottom) {
-                Text(text = activityModel.reps.toString(), fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = activityModel.units, fontSize = 10.sp, modifier = Modifier.alpha(.75f))
-            }
-            Text(
-                text = activityModel.name ?: "...",
-                modifier = Modifier.alpha(.75f),
-                fontSize = 12.sp
             )
         }
     }
